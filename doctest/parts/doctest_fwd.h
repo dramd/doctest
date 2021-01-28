@@ -365,6 +365,11 @@ DOCTEST_MSVC_SUPPRESS_WARNING(26812) // Prefer 'enum class' over 'enum'
 #define DOCTEST_BREAK_INTO_DEBUGGER() raise(SIGTRAP)
 #endif
 #elif defined(DOCTEST_PLATFORM_MAC)
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101200
+#define DOCTEST_USE_UNCAUGHT_EXCEPTIONS 1
+#else
+#define DOCTEST_USE_UNCAUGHT_EXCEPTIONS 0
+#endif
 #if defined(__x86_64) || defined(__x86_64__) || defined(__amd64__) || defined(__i386)
 #define DOCTEST_BREAK_INTO_DEBUGGER() __asm__("int $3\n" : :)
 #else
@@ -381,6 +386,10 @@ DOCTEST_GCC_SUPPRESS_WARNING_POP
 #define DOCTEST_BREAK_INTO_DEBUGGER() (static_cast<void>(0))
 #endif // linux
 #endif // DOCTEST_BREAK_INTO_DEBUGGER
+
+#ifndef DOCTEST_USE_UNCAUGHT_EXCEPTIONS
+#define DOCTEST_USE_UNCAUGHT_EXCEPTIONS 1
+#endif
 
 // this is kept here for backwards compatibility since the config option was changed
 #ifdef DOCTEST_CONFIG_USE_IOSFWD
